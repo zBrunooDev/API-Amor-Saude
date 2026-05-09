@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from pydantic import BaseModel
 
 from fastapi import Depends, FastAPI
@@ -11,9 +11,10 @@ app = FastAPI()
 DATABASE_URL = "sqlite:///./database.db"
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)    
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
 
 class Paciente(Base):
     __tablename__ = "pacientes"
@@ -26,6 +27,7 @@ class Paciente(Base):
     cep = Column(String, index=True)
     telefone = Column(String, index=True)
     sexo = Column(String, index=True)
+
 
 class Usuario(Base):
     __tablename__ = "usuarios"
@@ -46,7 +48,9 @@ class Consulta(Base):
     observacoes = Column(String, index=True)
     status = Column(String, index=True)
 
+
 Base.metadata.create_all(bind=engine)
+
 
 def get_db():
     db = SessionLocal()
@@ -54,7 +58,7 @@ def get_db():
         yield db
     finally:
         db.close()
-    
+
 
 class PacienteCreate(BaseModel):
     id: str
@@ -66,9 +70,10 @@ class PacienteCreate(BaseModel):
     telefone: str
     sexo: str
 
-@app.post('/pacientes/', response_model=PacienteCreate)
+
+@app.post("/pacientes/", response_model=PacienteCreate)
 def create_paciente(paciente: PacienteCreate, db: Session = Depends(get_db)):
-    
+
     db_paciente = Paciente(
         id=paciente.id,
         nome=paciente.nome,
@@ -77,7 +82,7 @@ def create_paciente(paciente: PacienteCreate, db: Session = Depends(get_db)):
         email=paciente.email,
         cep=paciente.cep,
         telefone=paciente.telefone,
-        sexo=paciente.sexo
+        sexo=paciente.sexo,
     )
 
     db.add(db_paciente)
