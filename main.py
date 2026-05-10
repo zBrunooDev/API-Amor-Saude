@@ -5,16 +5,10 @@ from pydantic import BaseModel
 
 from fastapi import Depends, FastAPI
 
+from database import engine, SessionLocal, Base
+
 
 app = FastAPI()
-
-DATABASE_URL = "sqlite:///./database.db"
-
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()
-
 
 class Paciente(Base):
     __tablename__ = "pacientes"
