@@ -5,6 +5,10 @@ from database import get_db
 from schemas import PacienteCreate
 from models import Paciente
 
+import crud
+from fastapi import HTTPException
+from schemas import PacienteUpdate
+
 router = APIRouter()
 
 @router.post("/", response_model=PacienteCreate)
@@ -26,3 +30,66 @@ def create_paciente(paciente: PacienteCreate, db: Session = Depends(get_db)):
     db.refresh(db_paciente)
 
     return db_paciente
+
+@router.get("/")
+def listar_pacientes(db: Session = Depends(get_db)):
+    return crud.get_pacientes(db)
+
+
+@router.get("/{paciente_id}")
+def buscar_paciente(
+    paciente_id: str,
+    db: Session = Depends(get_db)
+):
+    
+    paciente = crud.get_paciente_by_id(db, paciente_id)
+
+    if not paciente:
+        raise HTTPException(
+            status_code=404,
+            detail="Paciente não encontrado"
+        )
+
+    return paciente
+
+@router.put("/{paciente_id}")
+def atualizar_paciente(
+    paciente_id: str,
+    paciente: PacienteUpdate,
+    db: Session = Depends(get_db)
+):
+
+    updated_paciente = crud.update_paciente(
+        db,
+        paciente_id,
+        paciente
+    )
+
+    if not updated_paciente:
+        raise HTTPException(
+            status_code=404,
+            detail="Paciente não encontrado"
+        )
+
+    return updated_paciente
+
+@router.delete("/{paciente_id}")
+def deletar_paciente(
+    paciente_id: str,
+    db: Session = Depends(get_db)
+):
+
+    deleted_paciente = crud.delete_paciente(
+        db,
+        paciente_id
+    )
+
+    if not deleted_paciente:
+        raise HTTPException(
+            status_code=404,
+            detail="Paciente não encontrado"
+        )
+
+    return {
+        "message": "Paciente deletado com sucesso"
+    }
