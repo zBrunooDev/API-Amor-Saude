@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String
 from database import Base
 
+
 class Paciente(Base):
     __tablename__ = "pacientes"
 
@@ -22,6 +23,7 @@ class Usuario(Base):
     email = Column(String, unique=True, index=True)
     cpf = Column(String, unique=True, index=True)
     role = Column(String, index=True)
+    passwordHash = Column(String, index=True)
 
 
 class Consulta(Base):
