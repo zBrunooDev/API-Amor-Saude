@@ -18,3 +18,16 @@ class PacienteUpdate(BaseModel):
     cep: str
     telefone: str
     sexo: str
+
+class ConsultaBase(BaseModel):
+    pacienteId: str
+    usuarioId: str
+    data: str
+    observacoes: str
+    status: str
+
+class ConsultaCreate(ConsultaBase):
+    pass
+
+class ConsultaUpdate(ConsultaBase):
+    pass
