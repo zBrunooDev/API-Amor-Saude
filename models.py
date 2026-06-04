@@ -29,8 +29,9 @@ class Usuario(Base):
 class Consulta(Base):
     __tablename__ = "consultas"
     id = Column(String, primary_key=True, index=True)
-    pacienteId = Column(String, index=True)
-    usuarioId = Column(String, index=True)
+    paciente_id = Column(String, index=True)
+    usuario_id = Column(String, index=True)
     data = Column(String, index=True)
     observacoes = Column(String, index=True)
     status = Column(String, index=True)
+    especialidade_medico = Column(String, index=True)

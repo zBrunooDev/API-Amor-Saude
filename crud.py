@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from models import Paciente, Usuario, Consulta
+from schemas import ConsultaCreate
 
 
 def get_pacientes(db: Session):
@@ -48,21 +49,19 @@ def delete_paciente(db: Session, paciente_id: str):
     return paciente
 
 
-def create_consulta(db: Session, consulta):
-
+def create_consulta(db: Session, consulta: ConsultaCreate):
     db_consulta = Consulta(
         id=consulta.id,
-        pacienteId=consulta.pacienteId,
-        usuarioId=consulta.usuarioId,
+        paciente_id=consulta.paciente_id,  # Muda aqui
+        usuario_id=consulta.usuario_id,     # E aqui
         data=consulta.data,
         observacoes=consulta.observacoes,
         status=consulta.status,
+        especialidade_medico=consulta.especialidade_medico,  # E aqui
     )
-
     db.add(db_consulta)
     db.commit()
     db.refresh(db_consulta)
-
     return db_consulta
 
 
@@ -90,7 +89,7 @@ def delete_consulta(db: Session, consulta_id: str):
 
 def get_consultas_by_paciente_id(db: Session, paciente_id: str):
 
-    return db.query(Consulta).filter(Consulta.pacienteId == paciente_id).all()
+    return db.query(Consulta).filter(Consulta.paciente_id == paciente_id).all()
 
 
 def get_usuarios(db: Session):

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class PacienteCreate(BaseModel):
@@ -22,13 +22,17 @@ class PacienteUpdate(BaseModel):
     sexo: str
 
 
+
 class ConsultaBase(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    
     id: str
-    pacienteId: str
-    usuarioId: str
+    paciente_id: str = Field(alias="pacienteId")
+    usuario_id: str = Field(alias="UsuarioId")
     data: str
-    observacoes: str
+    observacoes: str | None = None
     status: str
+    especialidade_medico: str = Field(alias="EspecialidadeMedico")
 
 
 class ConsultaCreate(ConsultaBase):
